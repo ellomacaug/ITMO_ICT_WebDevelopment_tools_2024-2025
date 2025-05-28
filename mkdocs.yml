@@ -1,0 +1,5 @@
+site_name: ITMO ICT WebDevelopment Tools 2024-2025
+theme: readthedocs
+
+nav:
+  - Главная: index.md

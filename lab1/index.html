@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Lab 1 - ITMO ICT WebDevelopment Tools 2024-2025</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Lab 1";
+        var mkdocs_page_input_path = "lab1.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> ITMO ICT WebDevelopment Tools 2024-2025
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab 1</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">О проекте</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#-">Разработка веб-приложения для поиска партнеров в путешествие.</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#modelspy">models.py</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#tripspy">trips.py</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Lab 2</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../task1/">Task 1</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../task2/">Task 2</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">ITMO ICT WebDevelopment Tools 2024-2025</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Lab 1</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="_1">Добро пожаловать в документацию проекта!</h1>
+<h2 id="_2">О проекте</h2>
+<h2 id="-">Разработка веб-приложения для поиска партнеров в путешествие.</h2>
+<h3 id="modelspy">models.py</h3>
+<pre><code class="language-python">from enum import Enum
+
+from pydantic import BaseModel
+from sqlmodel import SQLModel, Field, Relationship
+from typing import List, Optional
+from datetime import date, datetime
+
+
+class OrganizerBase(SQLModel):
+    name: str
+    email: str
+
+
+class OrganizerProfile(OrganizerBase, table=True):
+    __tablename__ = &quot;organizerprofile&quot;
+    id: int = Field(default=None, primary_key=True)
+
+    trips: List[&quot;Trip&quot;] = Relationship(back_populates=&quot;organizer&quot;)
+
+
+class OrganizerCreate(OrganizerBase):
+    pass
+
+
+class OrganizerRead(OrganizerBase):
+    id: int
+
+
+class TripBase(SQLModel):
+    destination: str
+    start_date: date
+    end_date: date
+    description: Optional[str] = None
+
+
+class Trip(TripBase, table=True):
+    __tablename__ = &quot;trip&quot;
+    id: int = Field(default=None, primary_key=True)
+
+    organizer_profile_id: Optional[int] = Field(default=None, foreign_key=&quot;organizerprofile.id&quot;)
+    user_id: Optional[int] = Field(default=None, foreign_key=&quot;user.id&quot;)
+
+    user: Optional[&quot;User&quot;] = Relationship(back_populates=&quot;trips&quot;)
+    organizer: Optional[&quot;OrganizerProfile&quot;] = Relationship(back_populates=&quot;trips&quot;)
+    trip_requests: List[&quot;TripRequest&quot;] = Relationship(back_populates=&quot;trip&quot;)
+    saved_by_users: List[&quot;SavedTrip&quot;] = Relationship(back_populates=&quot;trip&quot;)
+
+
+class TripCreate(TripBase):
+    organizer_profile_id: int
+    user_id: Optional[int] = None
+
+
+class TripRead(TripBase):
+    id: int
+    organizer_profile_id: Optional[int]
+    user_id: Optional[int]
+
+
+class UserBase(SQLModel):
+    name: str
+    email: str
+    preferences: Optional[str] = None
+    bio: Optional[str] = None
+
+
+class User(UserBase, table=True):
+    __tablename__ = &quot;user&quot;
+    id: int = Field(default=None, primary_key=True)
+
+    trips: List[&quot;Trip&quot;] = Relationship(back_populates=&quot;user&quot;)
+    trip_requests: List[&quot;TripRequest&quot;] = Relationship(back_populates=&quot;user&quot;)
+    saved_trips: List[&quot;SavedTrip&quot;] = Relationship(back_populates=&quot;user&quot;)
+
+
+class UserCreate(UserBase):
+    pass
+
+
+class TripRequestStatus(str, Enum):
+    pending = &quot;pending&quot;
+    accepted = &quot;accepted&quot;
+    rejected = &quot;rejected&quot;
+    completed = &quot;completed&quot;
+    cancelled = &quot;cancelled&quot;
+
+
+class TripRequestBase(SQLModel):
+    status: TripRequestStatus = Field(default=TripRequestStatus.pending)
+
+
+class TripRequest(TripRequestBase, table=True):
+    __tablename__ = &quot;triprequest&quot;
+    id: int = Field(default=None, primary_key=True)
+
+    user_id: int = Field(foreign_key=&quot;user.id&quot;)
+    trip_id: int = Field(foreign_key=&quot;trip.id&quot;)
+
+    user: &quot;User&quot; = Relationship(back_populates=&quot;trip_requests&quot;)
+    trip: &quot;Trip&quot; = Relationship(back_populates=&quot;trip_requests&quot;)
+
+
+class TripRequestCreate(TripRequestBase):
+    user_id: int
+    trip_id: int
+
+
+class TripRequestRead(TripRequestBase):
+    id: int
+    user_id: int
+    trip_id: int
+
+
+class TripUpdate(SQLModel):
+    destination: Optional[str] = None
+    start_date: Optional[date] = None
+    end_date: Optional[date] = None
+    description: Optional[str] = None
+    organizer_profile_id: Optional[int] = None
+    user_id: Optional[int] = None
+
+
+class UserRead(UserBase):
+    id: int
+    trips: List[TripRead]
+    trip_requests: List[TripRequestRead]
+    saved_trips: List[TripRead]
+
+
+class TripRequestWithDetails(TripRequestRead):
+    trip: Optional[TripRead]
+    user: Optional[UserRead]
+
+
+class UserUpdate(SQLModel):
+    name: Optional[str] = None
+    email: Optional[str] = None
+    preferences: Optional[str] = None
+    bio: Optional[str] = None
+
+
+class TripWithDetails(TripRead):
+    user: Optional[UserRead]
+    organizer: Optional[OrganizerRead]
+
+
+class SavedTrip(SQLModel, table=True):
+    __tablename__ = &quot;savedtrip&quot;
+    user_id: int = Field(foreign_key=&quot;user.id&quot;, primary_key=True)
+    trip_id: int = Field(foreign_key=&quot;trip.id&quot;, primary_key=True)
+
+    saved_at: Optional[date] = Field(default_factory=date.today)
+
+    user: &quot;User&quot; = Relationship(back_populates=&quot;saved_trips&quot;)
+    trip: &quot;Trip&quot; = Relationship(back_populates=&quot;saved_by_users&quot;)
+
+
+class MessageBase(BaseModel):
+    content: str
+
+    class Config:
+        orm_mode = True
+
+
+class Message(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    sender_id: int = Field(foreign_key=&quot;user.id&quot;)
+    receiver_id: int = Field(foreign_key=&quot;user.id&quot;)
+    trip_id: int = Field(foreign_key=&quot;trip.id&quot;)
+    content: str
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+
+    sender: &quot;User&quot; = Relationship(sa_relationship_kwargs={&quot;foreign_keys&quot;: &quot;[Message.sender_id]&quot;})
+    receiver: &quot;User&quot; = Relationship(sa_relationship_kwargs={&quot;foreign_keys&quot;: &quot;[Message.receiver_id]&quot;})
+    trip: &quot;Trip&quot; = Relationship()
+
+
+class MessageCreate(MessageBase):
+    sender_id: int
+    receiver_id: int
+    trip_id: int
+
+
+class MessageRead(MessageBase):
+    id: int
+    sender_id: int
+    receiver_id: int
+    trip_id: int
+    timestamp: datetime
+
+
+class MessageUpdate(MessageBase):
+    content: Optional[str] = None
+</code></pre>
+<h3 id="tripspy">trips.py</h3>
+<pre><code class="language-python">from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlmodel import Session, select
+from sqlalchemy.orm import selectinload
+
+from db import get_session
+from models import *
+
+router = APIRouter()
+
+
+@router.post(&quot;/create&quot;, response_model=TripRead)
+def create_trip(trip: TripCreate, session: Session = Depends(get_session)):
+    db_trip = Trip.from_orm(trip)
+    session.add(db_trip)
+    session.commit()
+    session.refresh(db_trip)
+    return db_trip
+
+
+@router.get(&quot;/search&quot;, response_model=List[TripRead])
+def search_rides(
+        destination: Optional[str] = Query(None),
+        date: Optional[date] = Query(None),
+        db: Session = Depends(get_session)
+):
+    query = select(Trip)
+    if destination:
+        query = query.where(Trip.destination == destination)
+    if date:
+        query = query.where(Trip.start_date &lt;= date, Trip.end_date &gt;= date)
+    results = db.exec(query).all()
+    return results
+
+
+@router.get(&quot;/{trip_id}&quot;, response_model=TripWithDetails)
+def get_trip(trip_id: int, session: Session = Depends(get_session)):
+    trip = session.get(Trip, trip_id)
+    if not trip:
+        raise HTTPException(status_code=404, detail=&quot;Trip not found&quot;)
+    return trip
+
+
+@router.get(&quot;/&quot;, response_model=List[TripRead])
+def list_trips(session: Session = Depends(get_session)):
+    return session.query(Trip).all()
+
+
+@router.patch(&quot;/{trip_id}&quot;, response_model=TripRead)
+def update_trip(trip_id: int, trip: TripUpdate, session: Session = Depends(get_session)):
+    db_trip = session.get(Trip, trip_id)
+    if not db_trip:
+        raise HTTPException(status_code=404, detail=&quot;Trip not found&quot;)
+    trip_data = trip.model_dump(exclude_unset=True)
+    for key, value in trip_data.items():
+        setattr(db_trip, key, value)
+    session.commit()
+    session.refresh(db_trip)
+    return db_trip
+
+
+@router.delete(&quot;/delete/{trip_id}&quot;)
+def delete_trip(trip_id: int, session: Session = Depends(get_session)):
+    trip = session.get(Trip, trip_id)
+    if not trip:
+        raise HTTPException(status_code=404, detail=&quot;Trip not found&quot;)
+    for request in trip.trip_requests:
+        session.delete(request)
+
+    for saved_trip in trip.saved_by_users:
+        session.delete(saved_trip)
+    session.delete(trip)
+    session.commit()
+
+    return {&quot;status&quot;: 200, &quot;message&quot;: &quot;Trip deleted&quot;}
+
+
+@router.get(&quot;/{trip_id}/trip_requests&quot;, response_model=List[TripRequestWithDetails])
+def get_trip_requests(trip_id: int, session: Session = Depends(get_session)):
+    trip_requests = session.exec(
+        select(TripRequest)
+        .options(selectinload(TripRequest.trip), selectinload(TripRequest.user))
+        .where(TripRequest.trip_id == trip_id)
+    ).all()
+    if not trip_requests:
+        raise HTTPException(status_code=404, detail=&quot;No trip requests found&quot;)
+    return trip_requests
+
+
+@router.put(&quot;/update/{trip_id}&quot;, response_model=TripRead)
+def update_trip(trip_id: int, trip: TripUpdate, session: Session = Depends(get_session)):
+    db_trip = session.get(Trip, trip_id)
+    if not db_trip:
+        raise HTTPException(status_code=404, detail=&quot;Trip not found&quot;)
+    for key, value in trip.dict(exclude_unset=True).items():
+        setattr(db_trip, key, value)
+
+    session.commit()
+    session.refresh(db_trip)
+
+    return db_trip
+
+
+@router.get(&quot;/trips_vlozhenn/{trip_id}&quot;, response_model=TripWithDetails)
+def get_trip(trip_id: int, session: Session = Depends(get_session)):
+    trip = session.exec(
+        select(Trip)
+        .options(selectinload(Trip.user), selectinload(Trip.organizer))
+        .where(Trip.id == trip_id)
+    ).first()
+    if not trip:
+        raise HTTPException(status_code=404, detail=&quot;Trip not found&quot;)
+    return trip
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href=".." class="btn btn-neutral float-left" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../task1/" class="btn btn-neutral float-right" title="Task 1">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../task1/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

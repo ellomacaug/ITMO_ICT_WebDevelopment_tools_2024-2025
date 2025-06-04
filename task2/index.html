@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Task 2 - ITMO ICT WebDevelopment Tools 2024-2025</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Task 2";
+        var mkdocs_page_input_path = "task2.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> ITMO ICT WebDevelopment Tools 2024-2025
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../lab1/">Lab 1</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Lab 2</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../task1/">Task 1</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Task 2</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">Код</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">Результаты</a>
+    </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">ITMO ICT WebDevelopment Tools 2024-2025</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Lab 2</li>
+      <li class="breadcrumb-item active">Task 2</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="_1">Парсинг и работа с БД</h1>
+<p>Для парсинга был выбран сайт https://ru.wikipedia.org/. А именно:</p>
+<pre><code class="language-python">urls = [
+    https://ru.wikipedia.org/wiki/Аббадия_(замок),
+    https://ru.wikipedia.org/wiki/Арагонский_замок_(Реджо-ди-Калабрия),
+    https://ru.wikipedia.org/wiki/Арко_(замок),
+    https://ru.wikipedia.org/wiki/Барди_(замок),
+    https://ru.wikipedia.org/wiki/Башня_Ванга,
+    https://ru.wikipedia.org/wiki/Замок_Буонконсильо,
+    https://ru.wikipedia.org/wiki/Виголено_(замок),
+    https://ru.wikipedia.org/wiki/Галерея_Виктора_Эммануила_II,
+    https://ru.wikipedia.org/wiki/Дорога_любви,
+    https://ru.wikipedia.org/wiki/Ломбардо,_Розалия,
+    https://ru.wikipedia.org/wiki/Маростикский_праздник_шахмат,
+    https://ru.wikipedia.org/wiki/Мегалитическое_лицо_в_Борцоне,
+    https://ru.wikipedia.org/wiki/Павоне-Канавезе_(замок),
+    https://ru.wikipedia.org/wiki/Палаццо_делле_Альбере,
+    https://ru.wikipedia.org/wiki/Палаццо_Комунале_(Форли),
+    https://ru.wikipedia.org/wiki/Площадь_Саффи,
+    https://ru.wikipedia.org/wiki/Пьяцца-делла-Чистерна,
+    https://ru.wikipedia.org/wiki/Пьяцца-дель-Дуомо_(Сан-Джиминьяно),
+    https://ru.wikipedia.org/wiki/Рокка-Калашио_(замок),
+    https://ru.wikipedia.org/wiki/Савойя_(замок),
+    https://ru.wikipedia.org/wiki/Собор_Сан-Джиминьяно,
+    https://ru.wikipedia.org/wiki/Тироль_(замок),
+    https://ru.wikipedia.org/wiki/Торре_Росса,
+    https://ru.wikipedia.org/wiki/Торрекьяра_(замок),
+    https://ru.wikipedia.org/wiki/Цитадель_Равальдино,
+    https://ru.wikipedia.org/wiki/Энн_(замок),
+]
+</code></pre>
+<h2 id="_2">Код</h2>
+<p>DB</p>
+<pre><code class="language-python">from sqlalchemy.orm import sessionmaker
+from sqlmodel import SQLModel, create_engine, Session
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+db_url = os.getenv('DATABASE_URL')
+engine = create_engine(db_url, echo=True)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine, class_=Session)
+
+def get_session() -&gt; Session:
+    db = SessionLocal()
+    try:
+        return db
+    finally:
+        db.close()
+
+def init_db():
+    SQLModel.metadata.create_all(engine)
+</code></pre>
+<p>Models</p>
+<pre><code class="language-python">from enum import Enum
+
+from pydantic import BaseModel
+from sqlmodel import SQLModel, Field, Relationship
+from typing import List, Optional
+from datetime import date, datetime
+
+class OrganizerBase(SQLModel):
+    name: str
+    email: str
+
+class OrganizerProfile(OrganizerBase, table=True):
+    __tablename__ = &quot;organizerprofile&quot;
+    id: int = Field(default=None, primary_key=True)
+    trips: List[&quot;Trip&quot;] = Relationship(back_populates=&quot;organizer&quot;)
+
+class OrganizerCreate(OrganizerBase):
+    pass
+
+class OrganizerRead(OrganizerBase):
+    id: int
+
+class TripBase(SQLModel):
+    destination: str
+    start_date: Optional[date] = None
+    end_date: Optional[date] = None
+    description: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+class Trip(TripBase, table=True):
+    __tablename__ = &quot;trip&quot;
+    id: int = Field(default=None, primary_key=True)
+
+    organizer_profile_id: Optional[int] = Field(default=None, foreign_key=&quot;organizerprofile.id&quot;)
+    user_id: Optional[int] = Field(default=None, foreign_key=&quot;user.id&quot;)
+
+    user: Optional[&quot;User&quot;] = Relationship(back_populates=&quot;trips&quot;)
+    organizer: Optional[&quot;OrganizerProfile&quot;] = Relationship(back_populates=&quot;trips&quot;)
+    trip_requests: List[&quot;TripRequest&quot;] = Relationship(back_populates=&quot;trip&quot;)
+    saved_by_users: List[&quot;SavedTrip&quot;] = Relationship(back_populates=&quot;trip&quot;)
+
+class TripCreate(TripBase):
+    organizer_profile_id: int
+    user_id: Optional[int] = None
+
+class TripRead(TripBase):
+    id: int
+    organizer_profile_id: Optional[int]
+    user_id: Optional[int]
+
+class UserBase(SQLModel):
+    name: str
+    email: str
+    preferences: Optional[str] = None
+    bio: Optional[str] = None
+
+class User(UserBase, table=True):
+    __tablename__ = &quot;user&quot;
+    id: int = Field(default=None, primary_key=True)
+
+    trips: List[&quot;Trip&quot;] = Relationship(back_populates=&quot;user&quot;)
+    trip_requests: List[&quot;TripRequest&quot;] = Relationship(back_populates=&quot;user&quot;)
+    saved_trips: List[&quot;SavedTrip&quot;] = Relationship(back_populates=&quot;user&quot;)
+
+class UserCreate(UserBase):
+    pass
+
+class TripRequestStatus(str, Enum):
+    pending = &quot;pending&quot;
+    accepted = &quot;accepted&quot;
+    rejected = &quot;rejected&quot;
+    completed = &quot;completed&quot;
+    cancelled = &quot;cancelled&quot;
+
+class TripRequestBase(SQLModel):
+    status: TripRequestStatus = Field(default=TripRequestStatus.pending)
+
+class TripRequest(TripRequestBase, table=True):
+    __tablename__ = &quot;triprequest&quot;
+    id: int = Field(default=None, primary_key=True)
+
+    user_id: int = Field(foreign_key=&quot;user.id&quot;)
+    trip_id: int = Field(foreign_key=&quot;trip.id&quot;)
+
+    user: &quot;User&quot; = Relationship(back_populates=&quot;trip_requests&quot;)
+    trip: &quot;Trip&quot; = Relationship(back_populates=&quot;trip_requests&quot;)
+
+class TripRequestCreate(TripRequestBase):
+    user_id: int
+    trip_id: int
+
+class TripRequestRead(TripRequestBase):
+    id: int
+    user_id: int
+    trip_id: int
+
+class TripUpdate(SQLModel):
+    destination: Optional[str] = None
+    start_date: Optional[date] = None
+    end_date: Optional[date] = None
+    description: Optional[str] = None
+    organizer_profile_id: Optional[int] = None
+    user_id: Optional[int] = None
+
+class SavedTripWithDetails(BaseModel):
+    trip_id: int
+    user_id: int
+    saved_at: date
+    trip: TripRead
+
+    class Config:
+        orm_mode = True
+
+class UserRead(UserBase):
+    id: int
+    trips: List[TripRead]
+    trip_requests: List[TripRequestRead]
+    saved_trips: List[SavedTripWithDetails]
+
+class TripRequestWithDetails(TripRequestRead):
+    trip: Optional[TripRead]
+    user: Optional[UserRead]
+
+class UserUpdate(SQLModel):
+    name: Optional[str] = None
+    email: Optional[str] = None
+    preferences: Optional[str] = None
+    bio: Optional[str] = None
+
+class TripWithDetails(TripRead):
+    user: Optional[UserRead]
+    organizer: Optional[OrganizerRead]
+
+class SavedTrip(SQLModel, table=True):
+    __tablename__ = &quot;savedtrip&quot;
+    user_id: int = Field(foreign_key=&quot;user.id&quot;, primary_key=True)
+    trip_id: int = Field(foreign_key=&quot;trip.id&quot;, primary_key=True)
+
+    saved_at: Optional[date] = Field(default_factory=date.today)
+
+    user: &quot;User&quot; = Relationship(back_populates=&quot;saved_trips&quot;)
+    trip: &quot;Trip&quot; = Relationship(back_populates=&quot;saved_by_users&quot;)
+
+class MessageBase(BaseModel):
+    content: str
+
+    class Config:
+        orm_mode = True
+
+class Message(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    sender_id: int = Field(foreign_key=&quot;user.id&quot;)
+    receiver_id: int = Field(foreign_key=&quot;user.id&quot;)
+    trip_id: int = Field(foreign_key=&quot;trip.id&quot;)
+    content: str
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+
+    sender: &quot;User&quot; = Relationship(sa_relationship_kwargs={&quot;foreign_keys&quot;: &quot;[Message.sender_id]&quot;})
+    receiver: &quot;User&quot; = Relationship(sa_relationship_kwargs={&quot;foreign_keys&quot;: &quot;[Message.receiver_id]&quot;})
+    trip: &quot;Trip&quot; = Relationship()
+
+class MessageCreate(MessageBase):
+    sender_id: int
+    receiver_id: int
+    trip_id: int
+
+class MessageRead(MessageBase):
+    id: int
+    sender_id: int
+    receiver_id: int
+    trip_id: int
+    timestamp: datetime
+
+class MessageUpdate(MessageBase):
+    content: Optional[str] = None
+
+class SaveTripRequest(BaseModel):
+    user_id: int
+    trip_id: int
+
+class SavedTripDelete(BaseModel):
+    user_id: int
+    trip_id: int
+</code></pre>
+<h2 id="_3">Результаты</h2>
+<ul>
+<li>Threading</li>
+</ul>
+<pre><code class="language-python">import threading
+import requests
+from bs4 import BeautifulSoup
+from db import get_session
+from models import Trip
+import time
+
+def load_urls(filename):
+    with open(filename, encoding='utf-8') as f:
+        return [line.strip() for line in f if line.strip()]
+
+def parse_and_save(url):
+    try:
+        response = requests.get(url)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        title_element = soup.find('h1', id='firstHeading')
+        destination = title_element.get_text(strip=True) if title_element else &quot;Неизвестно&quot;
+
+        description = &quot;&quot;
+        for p in soup.find('div', class_='mw-parser-output').find_all('p'):
+            text = p.get_text(strip=True)
+            if text:
+                description += text + &quot; &quot;
+                if len(description) &gt; 1000:
+                    break
+        if not description.strip():
+            description = &quot;Описание отсутствует.&quot;
+
+        with get_session() as session:
+            session.add(Trip(destination=destination, description=description))
+            session.commit()
+        print(f&quot;[Thread] {destination} сохранена.&quot;)
+
+    except Exception as e:
+        print(f&quot;[Thread Error] {url}: {e}&quot;)
+
+def handle_url_threading(chunk):
+    for url in chunk:
+        parse_and_save(url)
+
+def main():
+    urls = load_urls(&quot;urls.txt&quot;)
+    num_threads = 5
+    step = len(urls) // num_threads
+    threads = []
+
+    for i in range(num_threads):
+        start = i * step
+        end = len(urls) if i == num_threads - 1 else (i + 1) * step
+        t = threading.Thread(target=handle_url_threading, args=(urls[start:end],))
+        threads.append(t)
+        t.start()
+
+    for t in threads:
+        t.join()
+
+if __name__ == &quot;__main__&quot;:
+    start = time.time()
+    main()
+    print(f&quot;Время выполнения: {time.time() - start:.2f} сек&quot;)
+</code></pre>
+<pre><code class="language-python">Время выполнения: 1.42 сек
+</code></pre>
+<ul>
+<li>Multiprocessing</li>
+</ul>
+<pre><code class="language-python">from multiprocessing import Pool
+import requests
+from bs4 import BeautifulSoup
+from db import get_session
+from models import Trip
+
+def load_urls(filename):
+    with open(filename, encoding='utf-8') as f:
+        return [line.strip() for line in f if line.strip()]
+
+def parse_and_save(url):
+    try:
+        response = requests.get(url)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        title_element = soup.find('h1', id='firstHeading')
+        destination = title_element.get_text(strip=True) if title_element else &quot;Неизвестно&quot;
+
+        description = &quot;&quot;
+        content_div = soup.find('div', class_='mw-parser-output')
+        if content_div:
+            for p in content_div.find_all('p'):
+                text = p.get_text(strip=True)
+                if text:
+                    description += text + &quot; &quot;
+                    if len(description) &gt; 1000:
+                        break
+
+        if not description.strip():
+            description = &quot;Описание отсутствует.&quot;
+
+        with get_session() as session:
+            session.add(Trip(destination=destination, description=description))
+            session.commit()
+        print(f&quot;[Process] {destination} сохранена.&quot;)
+    except Exception as e:
+        print(f&quot;[Process Error] {url}: {e}&quot;)
+
+def handle_url_multi(chunk):
+    for url in chunk:
+        parse_and_save(url)
+
+def main():
+    urls = load_urls(&quot;urls.txt&quot;)
+    num_processes = 5
+    chunk_size = len(urls) // num_processes
+    chunks = [urls[i * chunk_size: (i + 1) * chunk_size] for i in range(num_processes - 1)]
+    chunks.append(urls[(num_processes - 1) * chunk_size:])
+
+    with Pool(processes=num_processes) as pool:
+        pool.map(handle_url_multi, chunks)
+
+if __name__ == &quot;__main__&quot;:
+    import time
+
+    start = time.time()
+    main()
+    print(f&quot;Время выполнения: {time.time() - start:.2f} сек&quot;)
+</code></pre>
+<pre><code class="language-python">Время выполнения: 2.07 сек
+</code></pre>
+<ul>
+<li>Async</li>
+</ul>
+<pre><code class="language-python">import aiohttp
+import asyncio
+from bs4 import BeautifulSoup
+from db import get_session
+from models import Trip
+
+def load_urls(filename):
+    with open(filename, encoding='utf-8') as f:
+        return [line.strip() for line in f if line.strip()]
+
+async def fetch(session, url):
+    try:
+        async with session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as response:
+            return await response.text(), url
+    except Exception as e:
+        print(f&quot;[Fetch Error] {url}: {e}&quot;)
+        return &quot;&quot;, url
+
+async def parse_and_save(html, url):
+    try:
+        soup = BeautifulSoup(html, 'html.parser')
+        title_element = soup.find('h1', id='firstHeading')
+        destination = title_element.get_text(strip=True) if title_element else &quot;Неизвестно&quot;
+
+        description = &quot;&quot;
+        content_div = soup.find('div', class_='mw-parser-output')
+        if content_div:
+            for p in content_div.find_all('p'):
+                text = p.get_text(strip=True)
+                if text:
+                    description += text + &quot; &quot;
+                    if len(description) &gt; 1000:
+                        break
+
+        if not description.strip():
+            description = &quot;Описание отсутствует.&quot;
+
+        with get_session() as session:
+            session.add(Trip(destination=destination, description=description))
+            session.commit()
+        print(f&quot;[Async] {destination} сохранена.&quot;)
+    except Exception as e:
+        print(f&quot;[Async Error] {url}: {e}&quot;)
+
+async def handle_url_async(chunk):
+    async with aiohttp.ClientSession() as session:
+        htmls = await asyncio.gather(*(fetch(session, url) for url in chunk))
+        await asyncio.gather(*(parse_and_save(html, url) for html, url in htmls if html))
+
+async def main():
+    urls = load_urls(&quot;urls.txt&quot;)
+    num_chunks = 5
+    chunk_size = len(urls) // num_chunks
+    chunks = [urls[i * chunk_size: (i + 1) * chunk_size] for i in range(num_chunks - 1)]
+    chunks.append(urls[(num_chunks - 1) * chunk_size:])
+    await asyncio.gather(*(handle_url_async(chunk) for chunk in chunks))
+
+if __name__ == &quot;__main__&quot;:
+    import time
+
+    start = time.time()
+    asyncio.run(main())
+    print(f&quot;Время выполнения: {time.time() - start:.2f} сек&quot;)
+</code></pre>
+<pre><code class="language-python">Время выполнения: 0.11 сек
+</code></pre>
+<h1 id="_4">Вывод</h1>
+<p>Можно попробовать сделать вывод, что эффективнее всего асинхронный подход, но было, возможно, мало данных для парсинга.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../task1/" class="btn btn-neutral float-left" title="Task 1"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../task1/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

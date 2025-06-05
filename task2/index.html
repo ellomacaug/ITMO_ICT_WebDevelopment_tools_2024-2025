@@ -117,25 +117,38 @@
 </code></pre>
 <h2 id="_2">Код</h2>
 <p>DB</p>
-<pre><code class="language-python">from sqlalchemy.orm import sessionmaker
-from sqlmodel import SQLModel, create_engine, Session
+<pre><code class="language-python">from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import sessionmaker
+from sqlmodel import SQLModel
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
-db_url = os.getenv('DATABASE_URL')
-engine = create_engine(db_url, echo=True)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine, class_=Session)
 
-def get_session() -&gt; Session:
-    db = SessionLocal()
-    try:
-        return db
-    finally:
-        db.close()
+db_url = os.getenv('DATABASE_URL', &quot;postgresql+asyncpg://username:password@localhost/dbname&quot;)
 
-def init_db():
-    SQLModel.metadata.create_all(engine)
+engine = create_async_engine(db_url, echo=True)
+
+AsyncSessionLocal = sessionmaker(
+    bind=engine,
+    class_=AsyncSession,
+    expire_on_commit=False,
+    autocommit=False,
+    autoflush=False,
+)
+
+
+async def get_session() -&gt; AsyncSession:
+    async with AsyncSessionLocal() as session:
+        try:
+            yield session
+        finally:
+            await session.close()
+
+
+async def init_db():
+    async with engine.begin() as conn:
+        await conn.run_sync(SQLModel.metadata.create_all)
 </code></pre>
 <p>Models</p>
 <pre><code class="language-python">from enum import Enum
